@@ -128,6 +128,7 @@ export class Witness {
 		}, 5000);
 		this.fetchHeadlines();
 		this.fetchScriptSnippets();
+		this.fetchMemorySnippets();
 	}
 
 	private async tick() {
@@ -166,6 +167,20 @@ export class Witness {
 			logger.error({ err }, "Failed to fetch script snippets");
 		}
 		setTimeout(() => this.fetchScriptSnippets(), 60000);
+	}
+
+	private async fetchMemorySnippets() {
+		try {
+			const script = await Deno.readTextFile('output.txt');
+			const lines = script.split("\n");
+			const start = Math.floor(Math.random() * (lines.length));
+			const randomLines = lines[start];
+			this.heart.feel(`Random snippet from your memories: ${randomLines}`);
+			logger.debug({ randomLines }, `Random memory snippets`);
+		} catch (err) {
+			logger.error({ err }, "Failed to fetch memory snippets");
+		}
+		setTimeout(() => this.fetchMemorySnippets(), 60000);
 	}
 }
 
